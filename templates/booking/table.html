@@ -1,0 +1,11 @@
+<div>
+    {% verbatim %}
+    <table class="table table-hover">
+    <tr v-if="bookings.length" v-for="booking in bookings">
+        <td>{{ booking.pk }}</td>
+        <td>{{ booking.booking_no }}</td>
+        <td>{{ nbar }}</td>
+    </tr>
+    </table>
+    {% endverbatim %}
+</div>

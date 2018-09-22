@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div id="booking-app">
+        <!-- <div>
+                <input type="text" v-model="newLink" placeholder="RSS feed URL">
+                <button @click="newFeed">Save</button>
+        </div> -->
+    <div class="w-50 h-50 bg-warning">123456</div>
+    {% include 'booking/table.html' %}
+</div>
+
+
+<script type="application/javascript" src="{% static 'app.js' %}"></script>
+<script type="application/javascript">
+window.addEventListener("load", function() {
+    rssApp.reload();
+});
+</script>
+{% endblock %}
