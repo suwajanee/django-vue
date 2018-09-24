@@ -1,11 +1,34 @@
 <div>
     {% verbatim %}
-    <table class="table table-hover">
-    <tr v-if="bookings.length" v-for="booking in bookings">
-        <td>{{ booking.pk }}</td>
-        <td>{{ booking.booking_no }}</td>
-        <td>{{ nbar }}</td>
-    </tr>
+    <table v-if="bookings.length" class="table table-hover" >
+        <thead>
+            <th>DATE</th>
+            <th>BOOKING NO</th>
+            <th>CONTAINER NO</th>
+            <th>SEAL NO</th>
+            <th>CLOSING DATE</th>
+            <th>REMARK</th>
+            <th>WORK ID</th>
+        </thead>
+        <tr v-for="booking in bookings" :class="{'bg-secondary':booking.cancel==1}">
+
+            <td>{{ booking.date | formatTime }}</td>
+            <td v-if="booking.cancel==1" class="bg-secondary">{{ booking.booking_no }}</td>
+            <td v-else :class="[ifChange(booking.booking_no) ? 'alert-warning' : 'alert-danger']">{{ booking.booking_no }}</td>
+            <td>{{ booking.container_no }}</td>
+            <td>{{ booking.seal_no }}</td>
+            <td>{{ booking.closing_date | formatTime }}</td>
+            <td>{{ booking.remark }}</td>
+            <td :class="{'bg-secondary':booking.cancel==1, 'alert-info':booking.nextday==1}">{{ booking.work_id }}</td>
+        </tr>
+        
     </table>
+    <div v-else>
+        <h1>ไม่พบข้อมูล</h1>
+    </div>
+
+    
+    
+
     {% endverbatim %}
 </div>

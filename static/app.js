@@ -1,8 +1,19 @@
+Vue.filter('formatTime', function(value) {
+    if (value) {
+      const parts = value.split("-");
+      return parts[2] + "/" + parts[1] + "/" + parts[0].substring(2, 4);
+    } else {
+      return None;
+    }
+}); 
+
 var rssApp = new Vue({
     el: '#booking-app',
     
     data: {
         // items: [],
+        old_booking: '',
+        color_toggle: true,
         bookings: [],
         nbar: '',
     },
@@ -33,6 +44,16 @@ var rssApp = new Vue({
                 this.nbar = data.nbar;
             });
         },
+
+        ifChange: function(value) {
+            if(this.old_booking != value){
+                this.color_toggle = !this.color_toggle;
+            }
+            this.old_booking = value;
+            return this.color_toggle;
+        }
+
+
 
         // getItems: function() {
         //     this.api("/rss/items/").then((items) => {

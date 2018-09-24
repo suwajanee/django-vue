@@ -1,21 +1,69 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<br>
+{% verbatim %}
+<div id="filter-date" class="container col-12" style="height: auto;">
+        <div class="row">
+
+            <div class="col">
+                <form name="booking-filter-sort" method="GET" class="form-inline">
+                    <div class="input-group">
+                            <div class="input-group-prepend">
+                                <select name="filter_by" class="btn " style="background-color: #CED4DA;">
+                                    <option value="date" class="bg-white">Date</option>
+                                    <option value="month" class="bg-white">Month</option>
+                                </select>
+                            </div>
+
+                            <input id="id_date" name="date_filter" type="month" class="form-control mr-2" value="">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">OK</button>
+                </form>
+            </div>
+
+            <div class="col text-center">
+                <select name="action" class="custom-select col-3 mr-1">
+                    <option value=""> -------- </option>
+                    <option value="time"> ลงเวลา </option>
+                    <option value="delete"> ลบ </option>
+                </select>
+
+                <form class="d-inline"> 
+                        <input type="hidden" name="date_filter">
+                        <input type="hidden" name="filter_by">
+                    <button class="btn btn-primary action">GO</button>
+                </form>
+            </div>
+            
+            <div class="col text-right">
+                <button class="btn btn-primary mr-1"><i class="fa fa-edit"></i>&nbsp;Edit</button>
+                <form id="edit-filter" method="GET" style="display:none;">
+                    <input type="hidden" name="date_filter">
+                    <input type="hidden" name="filter_by">
+                </form>
+                <a class="btn btn-primary" href="" role="button"><i class="fa fa-plus"></i>&nbsp;Add</a>
+            </div>
+            
+        </div>
+    </div>
+
+{% endverbatim %}
+<br>
 
 <div id="booking-app">
-        <!-- <div>
-                <input type="text" v-model="newLink" placeholder="RSS feed URL">
-                <button @click="newFeed">Save</button>
-        </div> -->
-    <div class="w-50 h-50 bg-warning">123456</div>
     {% include 'booking/table.html' %}
 </div>
 
 
 <script type="application/javascript" src="{% static 'app.js' %}"></script>
+
 <script type="application/javascript">
 window.addEventListener("load", function() {
+    
     rssApp.reload();
+    
 });
 </script>
 {% endblock %}

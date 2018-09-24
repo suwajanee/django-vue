@@ -7,7 +7,7 @@ from .models import Booking
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'reader.html')
+    return render(request, 'reader.html', {'nbar': 'booking'})
 
 @csrf_exempt
 def rest_bookings(request):
