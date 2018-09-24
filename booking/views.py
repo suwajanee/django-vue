@@ -14,8 +14,5 @@ def rest_bookings(request):
     if request.method == "GET":
         bookings = Booking.objects.all()
         serializer = BookingSerializer(bookings, many=True)
-        context = {}
-        context['data'] = serializer.data
-        context['nbar'] = 'booking'
-        return JsonResponse(context, safe=False)
+        return JsonResponse(serializer.data, safe=False)
 

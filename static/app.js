@@ -15,6 +15,8 @@ var rssApp = new Vue({
         old_booking: '',
         color_toggle: true,
         bookings: [],
+        filter_by: 'date',
+        date_filter: '',
         nbar: '',
     },
 
@@ -34,24 +36,48 @@ var rssApp = new Vue({
         },
 
         reload: function() {
-            this.getBookings();
-            // this.getFeeds();
+            this.nbar = localStorage.getItem('nbar');
+            if(localStorage.getItem('nbar')){
+                if(this.nbar == 'table'){
+                    this.getBookings();
+                }
+                else if(this.nbar == 'edit'){
+                    this.editBookings();
+                }
+            }
+            else{
+                this.getBookings();
+            }
         },
 
         getBookings: function() {
             this.api("/booking/table/").then((data) => {
-                this.bookings = data.data;
-                this.nbar = data.nbar;
+                this.bookings = data;
+                this.nbar = 'table';
+                localStorage.setItem('nbar', this.nbar)
+            });
+        },
+
+        editBookings: function() {
+            this.api("/booking/table/").then((data) => {
+                this.bookings = data;
+                this.nbar = 'edit';
+                localStorage.setItem('nbar', this.nbar)
             });
         },
 
         ifChange: function(value) {
-            if(this.old_booking != value){
+            if(value != this.old_booking){
                 this.color_toggle = !this.color_toggle;
             }
             this.old_booking = value;
             return this.color_toggle;
+        },
+
+        onChange: function() {
+            console.log(this.filter_by);
         }
+    
 
 
 
