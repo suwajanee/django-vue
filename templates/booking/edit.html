@@ -1,0 +1,37 @@
+<div>
+        {% verbatim %}
+    
+    
+        <table v-if="bookings.length" class="table table-bordered table-hover" >
+            <thead>
+                <th>DATE</th>
+                <th>BOOKING NO</th>
+                <th>CONTAINER NO</th>
+                <th>SEAL NO</th>
+                <th>CLOSING DATE</th>
+                <th>REMARK</th>
+                <th>WORK ID</th>
+            </thead>
+            <tr v-for="booking in bookings" :class="{'bg-secondary':booking.cancel==1}">
+    
+                <td><input type="date" v-model="booking.date" class="form-control"></td>
+                <td v-if="booking.cancel==1" class="bg-secondary"><input v-model="booking.booking_no" class="form-control"></td>
+                <!-- <td>{{ color_toggle }}</td> -->
+                
+                <td v-else :class="[ifChange(booking.booking_no) ? 'alert-warning' : 'alert-danger']"><input v-model="booking.booking_no" class="form-control"></td>
+                <!-- <td>{{ ifChange(booking.booking_no) }} {{ color_toggle }}</td> -->
+                <td>{{ booking.container_no }}</td>
+                <td>{{ booking.seal_no }}</td>
+                <td>{{ booking.closing_date | formatTime }}</td>
+                <td>{{ booking.remark }}</td>
+                <td :class="{'bg-secondary':booking.cancel==1, 'alert-info':booking.nextday==1}">{{ booking.work_id }}</td>
+            </tr>
+    
+        </table>
+    
+        <div v-else>
+            <h1>ไม่พบข้อมูล</h1>
+        </div>
+    
+        {% endverbatim %}
+    </div>

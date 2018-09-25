@@ -2,16 +2,20 @@
 {% load static %}
 {% block content %}
 <br>
-{% verbatim %}
+<div id="booking-app">
+   
 <div id="filter-date" class="container col-12" style="height: auto;">
+   
         <div class="row">
 
             <div class="col">
                 <form name="booking-filter-sort" method="GET" class="form-inline">
                     <div class="input-group">
                             <div class="input-group-prepend">
-                                <select name="filter_by" class="btn " style="background-color: #CED4DA;">
-                                    <option value="date" class="bg-white">Date</option>
+                                <div v-if="filter_by == 'date'">One</div>
+                                <div v-if="filter_by == 'month'">Two</div>
+                                <select name="filter_by" class="btn " v-model="filter_by" style="background-color: #CED4DA;">
+                                    <option value="date" class="bg-white" selected>Date</option>
                                     <option value="month" class="bg-white">Month</option>
                                 </select>
                             </div>
@@ -23,7 +27,7 @@
                 </form>
             </div>
 
-            <div class="col text-center">
+            <div v-if="nbar=='table'" class="col text-center">
                 <select name="action" class="custom-select col-3 mr-1">
                     <option value=""> -------- </option>
                     <option value="time"> ลงเวลา </option>
@@ -37,8 +41,17 @@
                 </form>
             </div>
             
-            <div class="col text-right">
-                <button class="btn btn-primary mr-1"><i class="fa fa-edit"></i>&nbsp;Edit</button>
+            <div v-if="nbar=='table'" class="col text-right">
+                <button v-on:click="editBookings()" class="btn btn-primary mr-1" ><i class="fa fa-edit"></i>&nbsp;Edit</button>
+                <form id="edit-filter" method="GET" style="display:none;">
+                    <input type="hidden" name="date_filter">
+                    <input type="hidden" name="filter_by">
+                </form>
+                <a class="btn btn-primary" href="" role="button"><i class="fa fa-plus"></i>&nbsp;Add</a>
+            </div>
+
+            <div v-if="nbar=='edit'" class="col text-right">
+                <button v-on:click="getBookings()" class="btn btn-danger mr-1" ><i class="fa fa-edit"></i>&nbsp;Exit</button>
                 <form id="edit-filter" method="GET" style="display:none;">
                     <input type="hidden" name="date_filter">
                     <input type="hidden" name="filter_by">
@@ -47,13 +60,24 @@
             </div>
             
         </div>
+        
     </div>
+   
 
-{% endverbatim %}
 <br>
 
-<div id="booking-app">
+<div v-if="nbar=='table'">
+
     {% include 'booking/table.html' %}
+
+</div>
+
+<div v-if="nbar=='edit'">
+
+    {% include 'booking/edit.html' %}
+ 
+</div>
+
 </div>
 
 
@@ -63,7 +87,7 @@
 window.addEventListener("load", function() {
     
     rssApp.reload();
-    
+     
 });
 </script>
 {% endblock %}
