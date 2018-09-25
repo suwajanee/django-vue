@@ -17,7 +17,7 @@ var rssApp = new Vue({
         bookings: [],
         filter_by: 'date',
         date_filter: '',
-        nbar: '',
+        nbar: 'table',
     },
 
     methods: {
@@ -34,10 +34,15 @@ var rssApp = new Vue({
                 .then((response) => response.json())
                 .catch((error) => console.log(error));
         },
-
         reload: function() {
-            this.nbar = localStorage.getItem('nbar');
+            if(localStorage.getItem('filter_by')){
+                this.filter_by = localStorage.getItem('filter_by');
+            }
+            if(localStorage.getItem('date_filter')){
+                this.date_filter = localStorage.getItem('date_filter');
+            }
             if(localStorage.getItem('nbar')){
+                this.nbar = localStorage.getItem('nbar');
                 if(this.nbar == 'table'){
                     this.getBookings();
                 }
@@ -51,19 +56,17 @@ var rssApp = new Vue({
         },
 
         getBookings: function() {
-            this.api("/booking/table/").then((data) => {
-                this.bookings = data;
-                this.nbar = 'table';
-                localStorage.setItem('nbar', this.nbar)
-            });
+
+            this.filterBookings();
+            this.nbar = 'table';
+            localStorage.setItem('nbar', this.nbar);
         },
 
         editBookings: function() {
-            this.api("/booking/table/").then((data) => {
-                this.bookings = data;
-                this.nbar = 'edit';
-                localStorage.setItem('nbar', this.nbar)
-            });
+
+            this.filterBookings();
+            this.nbar = 'edit';
+            localStorage.setItem('nbar', this.nbar);
         },
 
         ifChange: function(value) {
@@ -74,8 +77,25 @@ var rssApp = new Vue({
             return this.color_toggle;
         },
 
-        onChange: function() {
-            console.log(this.filter_by);
+        changeType: function() {
+            this.date_filter = '';
+        },
+
+        filterBookings: function() {
+            if(this.date_filter) {
+                this.api("/booking/table/", "POST", {filter_by: this.filter_by, date_filter: this.date_filter}).then((data) => {
+                    this.bookings = data.bookings;
+                });
+            }
+            else {
+                this.api("/booking/table/").then((data) => {
+                    this.bookings = data.bookings;
+                });
+            }
+            
+            localStorage.setItem('filter_by', this.filter_by);
+            localStorage.setItem('date_filter', this.date_filter);
+
         }
     
 

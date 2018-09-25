@@ -10,20 +10,19 @@
 
             <div class="col">
                 <form name="booking-filter-sort" method="GET" class="form-inline">
+                        {{ filter_by }}
                     <div class="input-group">
                             <div class="input-group-prepend">
-                                <div v-if="filter_by == 'date'">One</div>
-                                <div v-if="filter_by == 'month'">Two</div>
-                                <select name="filter_by" class="btn " v-model="filter_by" style="background-color: #CED4DA;">
-                                    <option value="date" class="bg-white" selected>Date</option>
+                                <select id="filter_by" name="filter_by" class="btn " v-model="filter_by" style="background-color: #CED4DA;">
+                                    <option value="date" class="bg-white">Date</option>
                                     <option value="month" class="bg-white">Month</option>
                                 </select>
                             </div>
 
-                            <input id="id_date" name="date_filter" type="month" class="form-control mr-2" value="">
+                            <input id="date_filter" name="date_filter" :type="filter_by" class="form-control mr-2" v-model="date_filter" style="width: 200px;" v-on:change="filterBookings()">
                     </div>
 
-                    <button type="submit" class="btn btn-primary">OK</button>
+                    <!-- <button type="submit" class="btn btn-primary" v-on:click="filterBookings()">OK</button> -->
                 </form>
             </div>
 
