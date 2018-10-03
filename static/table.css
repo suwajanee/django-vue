@@ -2,9 +2,21 @@
 
 body { 
     font-family: THSarabunNew, sans-serif;
-    height: 100%;
-    /* width: 100%; */
+
 }
+
+html, body {
+    /* width: 100%; */
+    height: 100%;
+    margin: 0;
+}
+
+  /* div.div-table {
+    display: table;
+    margin: 0;
+
+
+  } */
 
 table, td {
     font-family: THSarabunNew, sans-serif;
@@ -17,6 +29,21 @@ table, td {
 thead {
     box-shadow: 0 0 4px 2px gray;
 }
+
+/* 
+.table-fixed tbody{
+    display:block;
+    width: 100%;
+    overflow: auto;
+    height: 150px;
+    table-layout: fixed;
+}
+    
+    .table-fixed thead {
+       display: block;
+       table-layout: fixed;
+    } */
+
 
 table.time th {
     padding: 3 5px;
@@ -34,12 +61,13 @@ th {
 td {
     padding: 5px;
     min-width: 60px;
+    height: 150px;
     /* background: white; */
     /* text-align: center; */
 }
 
 tbody {
-    background: white;
+    /* background: white; */
 }
 
 .w-1 {
@@ -73,12 +101,12 @@ tbody {
 
 /* Fix header table when scroll */
 .table-cont{
-    /* height: 85%; */
     overflow-y: auto;
     position: absolute;
-    bottom:0;
+    bottom: 0;
+    
     box-shadow: 0 0 1px 1px gray;
-    width:100%;
+    
 }
 
 /* [data-toggle="collapse"] .toggle-icon .fa:before {  
@@ -125,16 +153,20 @@ input#id_date {
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
+    border-radius: 10px;
+    vertical-align: bottom;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
     background: #f1f1f1; 
+    border-radius: 10px;
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
     background: #888; 
+    border-radius: 10px;
 }
 
 /* Handle on hover */

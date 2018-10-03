@@ -1,10 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'table.css' %}" />
+
+{% endblock %}
+
+
+
 {% block content %}
 <br>
 <div id="booking-app">
    
-<div id="filter-date" class="container col-12" style="height: auto;">
+<div id="filter-date" class="container col-12 bg-info" style="height: auto;">
    
         <div class="row">
 
@@ -19,7 +27,7 @@
                                 </select>
                             </div>
 
-                            <input id="date_filter" name="date_filter" :type="filter_by" class="form-control mr-2" v-model="date_filter" style="width: 200px;" v-on:change="filterBookings()">
+                            <input id="date_filter" name="date_filter" :type="filter_by" class="form-control mr-2" v-model="date_filter" style="max-width: 200px;" v-on:change="filterBookings()">
                     </div>
 
                     <!-- <button type="submit" class="btn btn-primary" v-on:click="filterBookings()">OK</button> -->
@@ -61,9 +69,7 @@
         </div>
         
     </div>
-   
-
-<br>
+   <br>
 
 <div v-if="nbar=='table'">
 
@@ -79,14 +85,16 @@
 
 </div>
 
-
+<script type="application/javascript" src="{% static 'fixed-header.js' %}"></script>
 <script type="application/javascript" src="{% static 'app.js' %}"></script>
 
 <script type="application/javascript">
+
 window.addEventListener("load", function() {
     
     rssApp.reload();
      
 });
+
 </script>
 {% endblock %}

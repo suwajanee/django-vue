@@ -7,7 +7,15 @@ window.onload = function(){
     function scrollHandle (e){
       var scrollTop = this.scrollTop;
       this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
+
     }
     
     tableCont.addEventListener('scroll',scrollHandle)
+
+    var filterDate = document.querySelector('#filter-date');
+
+    tableCont.style.top = filterDate.offsetTop+60+'px';
+
+
+    
   }

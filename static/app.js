@@ -3,7 +3,7 @@ Vue.filter('formatTime', function(value) {
       const parts = value.split("-");
       return parts[2] + "/" + parts[1] + "/" + parts[0].substring(2, 4);
     } else {
-      return None;
+      return ;
     }
 }); 
 
@@ -13,11 +13,14 @@ var rssApp = new Vue({
     data: {
         // items: [],
         old_booking: '',
-        color_toggle: true,
+        // color_toggle: true,
         bookings: [],
+        checked_bookings: [],
         filter_by: 'date',
         date_filter: '',
         nbar: 'table',
+        booking_color: ['#9977b4', '#dd86b9', '#f497a9', '#f9b489', '#fdcd79', '#fff68f', '#b6d884', '#81cbb5', '#6acade', '#72abdd'],
+        color_index: 0,
     },
 
     methods: {
@@ -69,12 +72,18 @@ var rssApp = new Vue({
             localStorage.setItem('nbar', this.nbar);
         },
 
-        ifChange: function(value) {
+        ifChange: function(value, obj_length, index) {
             if(value != this.old_booking){
-                this.color_toggle = !this.color_toggle;
+                this.color_index += 1;
             }
+            
             this.old_booking = value;
-            return this.color_toggle;
+            var color = this.booking_color[this.color_index];
+            if(this.color_index >= 10 | index == obj_length-1) {
+                this.color_index = 0;
+            }
+
+            return color;
         },
 
         changeType: function() {
