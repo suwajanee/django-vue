@@ -41,3 +41,22 @@ def rest_bookings(request):
     context['bookings'] = serializer.data
     return JsonResponse(context, safe=False)
 
+@csrf_exempt
+def rest_time_bookings(request):
+    context = {}
+    if request.method == "POST":
+        req = json.loads( request.body.decode('utf-8') )
+        pk_list = req["checked_bookings"]
+        if pk_list == []:
+            pk_list = request.session['checked_bookings']
+        if isinstance(pk_list, str):
+            pk_list = req["checked_bookings"].split(',')
+        bookings = Booking.objects.filter(pk__in=pk_list).order_by('date', 'work_id')
+
+        request.session['checked_bookings'] = pk_list
+
+    serializer = BookingSerializer(bookings, many=True)
+    context['bookings'] = serializer.data
+
+
+    return JsonResponse(context, safe=False)

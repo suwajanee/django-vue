@@ -12,7 +12,7 @@ var rssApp = new Vue({
     
     data: {
         // items: [],
-        old_booking: '',
+        old_booking: '*',
         // color_toggle: true,
         bookings: [],
         checked_bookings: [],
@@ -20,7 +20,10 @@ var rssApp = new Vue({
         date_filter: '',
         nbar: 'table',
         booking_color: ['#9977b4', '#dd86b9', '#f497a9', '#f9b489', '#fdcd79', '#fff68f', '#b6d884', '#81cbb5', '#6acade', '#72abdd'],
-        color_index: 0,
+        color_index: -1,
+        action: '',
+        all_checked: false,
+        color: '',
     },
 
     methods: {
@@ -38,12 +41,16 @@ var rssApp = new Vue({
                 .catch((error) => console.log(error));
         },
         reload: function() {
+            // if(localStorage.getItem('checked_bookings')){
+            //     this.checked_bookings = localStorage.getItem('checked_bookings');
+            // }
             if(localStorage.getItem('filter_by')){
                 this.filter_by = localStorage.getItem('filter_by');
             }
             if(localStorage.getItem('date_filter')){
                 this.date_filter = localStorage.getItem('date_filter');
             }
+
             if(localStorage.getItem('nbar')){
                 this.nbar = localStorage.getItem('nbar');
                 if(this.nbar == 'table'){
@@ -52,6 +59,9 @@ var rssApp = new Vue({
                 else if(this.nbar == 'edit'){
                     this.editBookings();
                 }
+                else if(this.nbar == 'time'){
+                    this.timeBookings();
+                }
             }
             else{
                 this.getBookings();
@@ -59,31 +69,38 @@ var rssApp = new Vue({
         },
 
         getBookings: function() {
-
             this.filterBookings();
             this.nbar = 'table';
             localStorage.setItem('nbar', this.nbar);
         },
 
         editBookings: function() {
-
             this.filterBookings();
             this.nbar = 'edit';
             localStorage.setItem('nbar', this.nbar);
         },
 
+        timeBookings: function() {
+
+            this.filtertimeBookings();
+            this.nbar = 'time';
+            localStorage.setItem('nbar', this.nbar);
+        },
+
         ifChange: function(value, obj_length, index) {
+
             if(value != this.old_booking){
                 this.color_index += 1;
-            }
-            
+            }           
             this.old_booking = value;
-            var color = this.booking_color[this.color_index];
+
+            this.color = this.booking_color[this.color_index];
+            
             if(this.color_index >= 10 | index == obj_length-1) {
-                this.color_index = 0;
+                this.color_index = -1;
             }
 
-            return color;
+            return this.color;
         },
 
         changeType: function() {
@@ -91,6 +108,8 @@ var rssApp = new Vue({
         },
 
         filterBookings: function() {
+            this.checked_bookings = [];
+            this.all_checked = false;
             if(this.date_filter) {
                 this.api("/booking/table/", "POST", {filter_by: this.filter_by, date_filter: this.date_filter}).then((data) => {
                     this.bookings = data.bookings;
@@ -105,10 +124,49 @@ var rssApp = new Vue({
             localStorage.setItem('filter_by', this.filter_by);
             localStorage.setItem('date_filter', this.date_filter);
 
-        }
-    
+        },
 
+        filtertimeBookings: function() {
+            this.api("/booking/time/", "POST", {checked_bookings: this.checked_bookings}).then((data) => {
+                this.bookings = data.bookings;
+            });
 
+            
+            
+            // localStorage.setItem('checked_bookings', this.checked_bookings);
+
+        },
+
+        selectAll: function() {
+            this.checked_bookings = [];
+
+            if (!this.all_checked) {
+                for (booking in this.bookings) {
+                    this.checked_bookings.push(this.bookings[booking].pk);   
+                }
+            }
+        },
+
+        selectAction: function() {
+            if (this.checked_bookings == []){
+                alert('select?');
+            }
+            if (this.action == 'delete'){
+                if (confirm('Are you sure?')){
+                    alert('sure?');
+                }
+                // localStorage.setItem('all_checked', this.all_checked);
+                // localStorage.setItem('checked_bookings', this.checked_bookings);
+            }
+            else if (this.action == 'time') {
+                this.timeBookings();
+                // localStorage.setItem('checked_bookings', this.checked_bookings);
+            }
+            else {
+                alert('sure?');
+            }
+
+        },
 
         // getItems: function() {
         //     this.api("/rss/items/").then((items) => {

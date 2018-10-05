@@ -12,22 +12,20 @@
 <br>
 <div id="booking-app">
    
-<div id="filter-date" class="container col-12 bg-info" style="height: auto;">
-   
+<div id="filter-date" class="container col-12" style="height: auto;">
         <div class="row">
 
             <div class="col">
                 <form name="booking-filter-sort" method="GET" class="form-inline">
-                        {{ filter_by }}
                     <div class="input-group">
                             <div class="input-group-prepend">
-                                <select id="filter_by" name="filter_by" class="btn " v-model="filter_by" style="background-color: #CED4DA;">
+                                <select name="filter_by" class="btn " v-model="filter_by" style="background-color: #CED4DA;">
                                     <option value="date" class="bg-white">Date</option>
                                     <option value="month" class="bg-white">Month</option>
                                 </select>
                             </div>
 
-                            <input id="date_filter" name="date_filter" :type="filter_by" class="form-control mr-2" v-model="date_filter" style="max-width: 200px;" v-on:change="filterBookings()">
+                            <input name="date_filter" :type="filter_by" class="form-control mr-2" v-model="date_filter" style="max-width: 200px;" v-on:change="filterBookings()">
                     </div>
 
                     <!-- <button type="submit" class="btn btn-primary" v-on:click="filterBookings()">OK</button> -->
@@ -35,34 +33,21 @@
             </div>
 
             <div v-if="nbar=='table'" class="col text-center">
-                <select name="action" class="custom-select col-3 mr-1">
+                <select name="action" v-model="action" class="custom-select col-3 mr-1">
                     <option value=""> -------- </option>
                     <option value="time"> ลงเวลา </option>
                     <option value="delete"> ลบ </option>
                 </select>
-
-                <form class="d-inline"> 
-                        <input type="hidden" name="date_filter">
-                        <input type="hidden" name="filter_by">
-                    <button class="btn btn-primary action">GO</button>
-                </form>
+                <button v-on:click="selectAction()" class="btn btn-primary mr-1" >GO</button>
             </div>
             
             <div v-if="nbar=='table'" class="col text-right">
                 <button v-on:click="editBookings()" class="btn btn-primary mr-1" ><i class="fa fa-edit"></i>&nbsp;Edit</button>
-                <form id="edit-filter" method="GET" style="display:none;">
-                    <input type="hidden" name="date_filter">
-                    <input type="hidden" name="filter_by">
-                </form>
                 <a class="btn btn-primary" href="" role="button"><i class="fa fa-plus"></i>&nbsp;Add</a>
             </div>
 
-            <div v-if="nbar=='edit'" class="col text-right">
+            <div v-if="nbar=='edit' | nbar == 'time'" class="col text-right">
                 <button v-on:click="getBookings()" class="btn btn-danger mr-1" ><i class="fa fa-edit"></i>&nbsp;Exit</button>
-                <form id="edit-filter" method="GET" style="display:none;">
-                    <input type="hidden" name="date_filter">
-                    <input type="hidden" name="filter_by">
-                </form>
                 <a class="btn btn-primary" href="" role="button"><i class="fa fa-plus"></i>&nbsp;Add</a>
             </div>
             
@@ -80,6 +65,11 @@
 <div v-if="nbar=='edit'">
 
     {% include 'booking/edit.html' %}
+ 
+</div>
+
+<div v-if="nbar=='time'">
+    {% include 'booking/time.html' %}
  
 </div>
 
