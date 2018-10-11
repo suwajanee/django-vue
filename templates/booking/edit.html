@@ -15,6 +15,8 @@
             <tr v-for="(booking, index) in bookings" :class="{'bg-secondary':booking.cancel==1}">
     
                 <td><input type="date" v-model="booking.date" class="form-control"></td>
+                {{ ifChange(booking.booking_no, bookings.length, index ) }}
+                
                 <td v-if="booking.cancel==1" :class="{ 'bg-secondary': ifChange(booking.booking_no, bookings.length, index ) }"><input v-model="booking.booking_no" class="form-control"></td>
                 <td v-else v-bind:style="{ 'background-color': ifChange(booking.booking_no, bookings.length, index ) }"><input v-model="booking.booking_no" class="form-control"></td>
                 <!-- <td>{{ ifChange(booking.booking_no) }} {{ color_toggle }}</td> -->

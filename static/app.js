@@ -12,7 +12,7 @@ var rssApp = new Vue({
     
     data: {
         // items: [],
-        old_booking: '*',
+        old_booking: '',
         // color_toggle: true,
         bookings: [],
         checked_bookings: [],
@@ -25,6 +25,26 @@ var rssApp = new Vue({
         all_checked: false,
         color: '',
     },
+    // computed: {
+    //     ifChange: function(value, obj_length, index) {
+            
+    //         if(value == '' & index == 0){
+    //             this.color_index = 0;
+    //         }
+
+    //         if(value != this.old_booking ){
+    //             this.color_index += 1;
+    //         }           
+    //         this.old_booking = value;
+
+    //         this.color = this.booking_color[this.color_index];
+    //         if(this.color_index >= 10 | index == obj_length-1) {
+    //             this.color_index = -1;
+    //         }
+
+    //         return this.color;
+    //     },
+    // },
 
     methods: {
         api: function(endpoint, method, data) {
@@ -82,25 +102,29 @@ var rssApp = new Vue({
 
         timeBookings: function() {
 
-            this.filtertimeBookings();
+            this.filterTimeBookings();
             this.nbar = 'time';
+
             localStorage.setItem('nbar', this.nbar);
         },
 
         ifChange: function(value, obj_length, index) {
+            
+            if(value == '' & index == 0){
+                this.color_index = 0;
+            }
 
-            if(value != this.old_booking){
+            if(value != this.old_booking ){
                 this.color_index += 1;
             }           
             this.old_booking = value;
 
             this.color = this.booking_color[this.color_index];
-            
             if(this.color_index >= 10 | index == obj_length-1) {
                 this.color_index = -1;
             }
 
-            return this.color;
+            // return color;
         },
 
         changeType: function() {
@@ -126,14 +150,11 @@ var rssApp = new Vue({
 
         },
 
-        filtertimeBookings: function() {
+        filterTimeBookings: function() {
             this.api("/booking/time/", "POST", {checked_bookings: this.checked_bookings}).then((data) => {
                 this.bookings = data.bookings;
             });
-
             
-            
-            // localStorage.setItem('checked_bookings', this.checked_bookings);
 
         },
 
@@ -148,10 +169,10 @@ var rssApp = new Vue({
         },
 
         selectAction: function() {
-            if (this.checked_bookings == []){
+            if (this.checked_bookings.length == 0){
                 alert('select?');
             }
-            if (this.action == 'delete'){
+            else if (this.action == 'delete'){
                 if (confirm('Are you sure?')){
                     alert('sure?');
                 }
