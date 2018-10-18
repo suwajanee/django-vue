@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'table.css' %}" />
+
+{% endblock %}
+
+
+
+{% block content %}
+<br>
+<div id="booking-add">
+    
+    
+        <!-- <li class="dropdown-item" v-if="principal" v-for="p in principal"> {{ p.name }} </li> -->
+        
+        {% verbatim %}
+        <!-- <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  Dropdown button
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="#" v-for="color in booking_color">{{ color }}</a>
+                </div>
+              </div> -->
+        
+        {{ principal }}
+
+
+    <div class="container col-md-8 shadow bg-white">
+        <div class="container col-md-10">
+            <div class="container text-center pt-4 pb-2">
+                <h2>Add Booking</h2>
+                <hr>
+            </div>
+
+              
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">CUSTOMER</span>
+                    </div>
+                    <button class="custom-select text-left rounded-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </button>
+
+                    <div class="dropdown-menu dropdown-menu-right w-100">                    
+                        <div class="dropdown-item">
+                            <input class="form-control" type="text" placeholder="search" v-model="search">
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="options-list">
+                                <!-- <ul class="menu">
+                                        <li class="dropdown-item" v-if="principal" v-for="p in principal">
+                                          <a href="#" class="dd-link pointer hover-bg-moon-gray">{{ p.name }}</a>
+                                        </li>
+                                      </ul> -->
+                            <!-- <input type="hidden" id="principal_selected" name="principal"> -->
+                        <button class="dropdown-item" v-for="principal in filteredPrincipal" @click="select(principal.pk)"> {{ principal.name }} </button>
+                        <!-- <button class="dropdown-item" v-else > 555555 </button> -->
+
+                        </div>
+                    </div>
+                </div>
+
+                <select v-model="form.shipper">
+                    <option v-if="shipper" v-for="ship in shipper">{{ ship.name }}</option>
+                </select>
+
+                {{ form.shipper }}
+
+                <!-- <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">SHIPPER</span>
+                    </div>
+                    <select id="id_shipper" name="shipper" class="custom-select" required>
+                        <option value=""> -------- </option>
+                        {% for s in shippers %}
+                            <option value="{{ s.pk }}"> {{ s.name }} </option>
+                        {% endfor %}
+                    </select>
+                </div> -->
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">AGENT</span>
+                    </div>
+                </div>
+                    
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">BOOKING NO.</span>
+                    </div>
+                </div>
+                        
+                <fieldset>
+                    <legend>CONTAINER</legend>
+                    
+                        <div class="control">
+                            <div class="entry input-group control-group mb-2">
+                                <input type="text" name="time" class="form-control col-md-3" placeholder="TIME" maxlength="10" >
+
+                                <select name="size" class="custom-select col-md-3" style="height: 40px;">
+                                    <option value=""> -------- </option>
+                                    <option value="20'">20'</option>
+                                    <option value="20'RF">20'RF</option>
+                                    <option value="40'">40'</option>
+                                    <option value="40'HC">40'HC</option>
+                                    <option value="40'OT">40'OT</option>
+                                    <option value="40'GOH">40'GOH</option>
+                                    <option value="40'RF">40'RF</option>
+                                    <option value="45'">45'</option>
+                                    <option value="" disabled> -------- </option>
+                                    <option value="2X20'">2X20'</option>
+                                    <option value="2X20'RF">2X20'RF</option>
+                                </select>
+
+                                <input type="number" name="quantity" min="1" class="form-control col-md-2" placeholder="QTY" required>
+                                <input type="date" name="date" class="form-control col-md-4" placeholder="DATE" required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-success add-more" type="button"><span><i class="fa fa-plus"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+
+                </fieldset>
+                            
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">FROM</span>
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text">FACTORY</span>
+                    </div>
+                    <div class="input-group-append">
+                        <span class="input-group-text">TO</span>
+                    </div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">VESSEL</span>
+                    </div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">PORT</span>
+                    </div>
+                </div>
+
+                <fieldset>
+                    <legend>ตัดหาง</legend>
+                    <div class="container input-group mb-2 col-sm-8">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="hidden" name="nextday" value=0 />
+                                    <input type="checkbox" class="custom-control-input" id="nextday" name="nextday" value=1 onchange="updateNextDay();">
+                                    <label class="custom-control-label" for="nextday"></label>
+                                </div>
+                            </div>
+                            <span class="input-group-text">RETURN DATE</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">CLOSING</span>
+                    </div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">REF.</span>
+                    </div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">REMARK</span>
+                    </div>
+                </div>
+                    
+                <div class="text-right pb-4">
+                    <button class="btn btn-light btn-lg mr-sm-1" v-on:click="getBookings()">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-lg" formaction="">SUBMIT</button>
+                </div>
+       
+
+        </div>  
+    </div>
+
+
+
+    {% endverbatim %}
+
+</div>
+
+
+
+
+<script type="application/javascript" src="{% static 'app_add.js' %}"></script>
+<!-- <script type="application/javascript" src="{% static 'app.js' %}"></script> -->
+
+<script type="application/javascript">
+
+window.addEventListener("load", function() {
+    
+    add_booking.reload();
+     
+});
+
+</script>
+{% endblock %}

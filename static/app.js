@@ -5,9 +5,11 @@ Vue.filter('formatTime', function(value) {
     } else {
       return ;
     }
-}); 
+});
+
 
 var rssApp = new Vue({
+    
     el: '#booking-app',
     
     data: {
@@ -20,34 +22,18 @@ var rssApp = new Vue({
         date_filter: '',
         nbar: 'table',
         booking_color: ['#9977b4', '#dd86b9', '#f497a9', '#f9b489', '#fdcd79', '#fff68f', '#b6d884', '#81cbb5', '#6acade', '#72abdd'],
-        color_index: -1,
+        color_index: 0,
         action: '',
         all_checked: false,
-        color: '',
+        edit: [],
+        loading: false,
+        modal:'',
+        address: ''
+
     },
-    // computed: {
-    //     ifChange: function(value, obj_length, index) {
-            
-    //         if(value == '' & index == 0){
-    //             this.color_index = 0;
-    //         }
-
-    //         if(value != this.old_booking ){
-    //             this.color_index += 1;
-    //         }           
-    //         this.old_booking = value;
-
-    //         this.color = this.booking_color[this.color_index];
-    //         if(this.color_index >= 10 | index == obj_length-1) {
-    //             this.color_index = -1;
-    //         }
-
-    //         return this.color;
-    //     },
-    // },
 
     methods: {
-        api: function(endpoint, method, data) {
+        api: function (endpoint, method, data) {
             var config = {
                 method: method || 'GET',
                 body: data !== undefined ? JSON.stringify(data) : null,
@@ -60,10 +46,7 @@ var rssApp = new Vue({
                 .then((response) => response.json())
                 .catch((error) => console.log(error));
         },
-        reload: function() {
-            // if(localStorage.getItem('checked_bookings')){
-            //     this.checked_bookings = localStorage.getItem('checked_bookings');
-            // }
+        reload: function () {
             if(localStorage.getItem('filter_by')){
                 this.filter_by = localStorage.getItem('filter_by');
             }
@@ -86,6 +69,7 @@ var rssApp = new Vue({
             else{
                 this.getBookings();
             }
+            
         },
 
         getBookings: function() {
@@ -108,25 +92,6 @@ var rssApp = new Vue({
             localStorage.setItem('nbar', this.nbar);
         },
 
-        ifChange: function(value, obj_length, index) {
-            
-            if(value == '' & index == 0){
-                this.color_index = 0;
-            }
-
-            if(value != this.old_booking ){
-                this.color_index += 1;
-            }           
-            this.old_booking = value;
-
-            this.color = this.booking_color[this.color_index];
-            if(this.color_index >= 10 | index == obj_length-1) {
-                this.color_index = -1;
-            }
-
-            // return color;
-        },
-
         changeType: function() {
             this.date_filter = '';
         },
@@ -137,22 +102,41 @@ var rssApp = new Vue({
             if(this.date_filter) {
                 this.api("/booking/table/", "POST", {filter_by: this.filter_by, date_filter: this.date_filter}).then((data) => {
                     this.bookings = data.bookings;
+                    this.getColor();
                 });
             }
             else {
                 this.api("/booking/table/").then((data) => {
                     this.bookings = data.bookings;
+                    this.getColor();
                 });
             }
+
             
             localStorage.setItem('filter_by', this.filter_by);
             localStorage.setItem('date_filter', this.date_filter);
 
         },
 
+        getColor: function() {
+            for(booking in this.bookings) {
+                if(booking == 0){
+                    this.bookings[booking].color = this.booking_color[this.color_index=0];
+                }
+                else if(this.bookings[booking].booking_no != this.bookings[booking-1].booking_no){
+                    this.bookings[booking].color = this.booking_color[++this.color_index % 10];
+                }
+                else{
+                    this.bookings[booking].color = this.booking_color[this.color_index % 10];
+                }
+            }
+        },
+
         filterTimeBookings: function() {
             this.api("/booking/time/", "POST", {checked_bookings: this.checked_bookings}).then((data) => {
                 this.bookings = data.bookings;
+                this.getColor();
+
             });
             
 
@@ -174,7 +158,7 @@ var rssApp = new Vue({
             }
             else if (this.action == 'delete'){
                 if (confirm('Are you sure?')){
-                    alert('sure?');
+                    this.deleteBooking();
                 }
                 // localStorage.setItem('all_checked', this.all_checked);
                 // localStorage.setItem('checked_bookings', this.checked_bookings);
@@ -194,17 +178,37 @@ var rssApp = new Vue({
         //         this.items = items;
         //     });
         // },
+        ifChangeValue: function(booking) {
+            if(this.edit.indexOf(booking) === -1) {
+                this.edit.push(booking);
+              }
+        },
 
-        // newFeed: function() {
-        //     this.api("/rss/feeds/", "POST", { url: this.newLink }).then(() => {
-        //         this.reload();
-        //     });
-        // },
+        editBooking: function() {
+            this.loading = true;
+            this.api("/booking/edit/", "POST", { booking: this.edit, filter_by: this.filter_by, date_filter: this.date_filter }).then((data) => {
+                this.bookings = data.bookings;
+                this.getColor();
+                this.loading = false;
+            });
+            
+        },
 
-        // deleteFeed: function(id) {
-        //     this.api("/rss/feeds/" + id + "/", "DELETE").then(() => {
-        //         this.reload();
-        //     });
-        // }
+        deleteBooking: function() {
+            this.api("/booking/delete/", "POST", { pk: this.checked_bookings, filter_by: this.filter_by, date_filter: this.date_filter }).then((data) => {
+                this.bookings = data.bookings;
+                this.getColor();
+            });
+        },
+
+        selectModal(index) {
+            console.log(index)
+            this.modal = index
+            this.api("/booking/shipper/", "POST", {prin: this.modal}).then((data) => {
+                console.log(data)
+                this.address = data;
+                console.log(this.address)
+            });
+        },
     }
 });
